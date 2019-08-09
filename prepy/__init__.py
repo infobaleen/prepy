@@ -13,7 +13,7 @@ def csv_to_table(database: str, table: str, pattern: str, filters, delimiter: st
     files = glob.glob(pattern)
 
     # Create table if needed
-    columnCount = create_table_from_csv_header(conn, c, table, files[0])
+    columnCount = create_table_from_csv_header(conn, c, table, files[0], delimiter=delimiter)
 
     # Insert data
     for file in files:
@@ -24,8 +24,7 @@ def csv_to_table(database: str, table: str, pattern: str, filters, delimiter: st
                 if i == 0:
                     for k, value in enumerate(row):
                         header[value] = k
-
-                if i != 0:
+                else:
                     # Generate placeholder string based on the number of columns (eg. "?, ?")
                     placeholders = ", ".join(list(map(lambda j: f"?", range(columnCount))))
 
@@ -40,9 +39,9 @@ def csv_to_table(database: str, table: str, pattern: str, filters, delimiter: st
 
 
 # Create database using only "text" field from arbitrary CSV file
-def create_table_from_csv_header(conn, c, table: str, filename: str) -> int:
+def create_table_from_csv_header(conn, c, table: str, filename: str, delimiter: str = ',') -> int:
     f = open(filename)
-    header = f.readline().rstrip('\n').split(',')
+    header = f.readline().rstrip('\n').split(delimiter)
     f.close()
     fields = list(map(lambda s: s + " text", header))
     columns = ", ".join(fields)
