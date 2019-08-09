@@ -4,7 +4,7 @@ import sqlite3
 
 
 # Create table and insert data from N CSV files
-def csv_to_table(database: str, table: str, pattern: str, filters):
+def csv_to_table(database: str, table: str, pattern: str, filters, delimiter: str = ','):
     # Connect to sqlite
     conn = sqlite3.connect(database)
     c = conn.cursor()
@@ -19,7 +19,7 @@ def csv_to_table(database: str, table: str, pattern: str, filters):
     for file in files:
         header = {}
         with open(file) as csv_file:
-            r = csv.reader(csv_file, delimiter=',')
+            r = csv.reader(csv_file, delimiter=delimiter)
             for i, row in enumerate(r):
                 if i == 0:
                     for k, value in enumerate(row):
